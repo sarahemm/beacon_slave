@@ -2,6 +2,9 @@
 #include <Wire.h>
 #include <avr/wdt.h>
 
+#define WDT_TIMEOUT 9   // ~8 seconds
+//#define DEBUG 1
+
 #define DARK   0x00
 #define RED    0x01
 #define GREEN  0x02
@@ -43,8 +46,6 @@
 #define L9R 13
 #define L9G 14
 #define L9B 15
-
-//#define DEBUG 1
 
 struct led {
   byte r_pin_addr;       /* Layer-local pin address */
