@@ -1,5 +1,6 @@
 #include <EEPROM.h>
 #include <Wire.h>
+#include <avr/wdt.h>
 
 #define DARK   0x00
 #define RED    0x01
@@ -55,6 +56,10 @@ struct led leds[10]; /* all LEDs on this board */
 volatile int bytesToReceive = 0;
 
 void setup() {
+  wdt_disable();
+  wdt_enable(WDT_TIMEOUT);
+  wdt_reset();
+  
   leds[0].r_pin_addr = L0R;  
   leds[0].g_pin_addr = L0G;
   leds[0].b_pin_addr = L0B;
@@ -104,6 +109,7 @@ void setup() {
   #ifdef DEBUG
     // Flash each LED quickly to show that we're alive
     for(i=0; i<=9; i++) {
+      wdt_reset();
       digitalWrite(leds[i].r_pin_addr, HIGH);
       delay(75);
       digitalWrite(leds[i].r_pin_addr, LOW);
@@ -126,6 +132,7 @@ void setup() {
     delay(100);
     digitalWrite(leds[0].r_pin_addr, LOW);
     delay(125);
+    wdt_reset();
   }
   
   // Start talking on the I2C bus
@@ -145,6 +152,7 @@ void setup() {
 
 void loop() {
   //delay(100);
+  wdt_reset();
   if(bytesToReceive > 0) {
     //while(0 < Wire.available()) {
       //Serial.println(Wire.receive(), HEX);
@@ -155,6 +163,7 @@ void loop() {
 
 void setLedColour(byte ledNumber, byte colour) {
   #ifdef DEBUG
+    wdt_reset();
     Serial.print("Setting LED ");
     Serial.print(ledNumber, DEC);
     Serial.print(" to colour ");
